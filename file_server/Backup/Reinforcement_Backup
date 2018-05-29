@@ -1,0 +1,200 @@
+#!/usr/bin/env python
+
+# Deep Q-Network reinforcement learning on gym AI MountainCar-v0
+# Lukas Rasmus Nielsen & Christoffer Bredo Lillelund
+# Multimedia Programming
+
+# Imports:
+import sys
+import gym
+# import pylab
+
+import random
+import numpy as np
+from collections import deque
+from keras.layers import Dense
+# from keras.layers import Convolutional
+from keras.optimizers import Adam
+from keras.models import Sequential
+import matplotlib.pyplot as plt
+# Set start time to calculate full time taken to run the program.
+import time
+
+start_time = time.time()
+
+
+# Deep Q-network agent for MountainCar-v0 environment
+# Uses neural network for q approximation and experience replay.
+class Agent:
+    def __init__(self, size_of_states, size_of_actions):
+
+        # Set this to true to render the environment
+        self.rendering = True
+
+        # State and action sizes from class input
+        self.state_size = size_of_states
+        self.action_size = size_of_actions
+
+        # Setting hyper parameters for the agent
+        self.gamma = 1  # The discount factor to reduce future reward. Set to 1 means no reduction in future reward value.
+        self.lr = 0.001  # The learning rate of the agent
+        self.epsilon = 1.0  # Starting epsilon. Sets the percentage of which the agent will perform a random action.
+        self.epsilon_decay = 0.9999  # The epsilon decay is multiplied with the epsilon each episode to decrease it over time
+        self.min_epsilon = 0.01  # Sets the minimal epsilon, such that the agent will always explore a little bit.
+        self.batch_size = 32  # Batch size for the experience replay
+        self.train_start = 1000  # Start training after this amount of data has been collected
+        self.memory = deque(maxlen=10000)  # Creates a list (deque) to remember previous data.
+
+        # Creating the models
+        self.model = self.build_model()  # model for current state
+        self.targetState_model = self.build_model()  # model for next state (target)
+
+        # initially sets the parameters and weights of the target model to be the same as the current state model.
+        self.update_targetState_model()
+
+        # approximate Q function using Neural Network
+
+    # state is input and Q Value of each action is output of network
+
+    # function to create the models
+    def build_model(self):
+        # Model is made. It is a Sequential model
+        model = Sequential()
+        # Change the below integers to change the number of neurons in each layer.
+        model.add(Dense(256, input_dim=self.state_size, activation='relu'))  # Adds first hidden layer with activation
+        #  function Relu to model
+        model.add(Dense(128, activation='relu'))  # Adds second hidden layer to model
+        model.add(Dense(self.action_size, activation='linear'))  # add output layer
+        model.compile(loss='mse', optimizer=Adam(lr=self.lr))  # sets the loss function and optimizer of the model
+        return model
+
+        # Updates the targetState model to have the same weights as the current state model
+
+    def update_targetState_model(self):
+        self.targetState_model.set_weights(self.model.get_weights())  # Sets weights to same as current state model
+
+    # Epsilon-greedy policy is here used to determine if the action with the highest q-value is to be chosen, or if
+    # a random action is to be chosen.
+    def get_action(self, state):
+        if np.random.rand() <= self.epsilon:
+            return random.randrange(self.action_size)  # Returns a random action
+        else:
+            qVal = self.model.predict(state)
+            return np.argmax(qVal[0])  # Returns the action which has the higest q-value
+
+    # Appends the samples from the current state (state, action, reward, next_state, done) to the memory.
+    def experience_replay(self, state, action, reward, next_state, done):
+        self.memory.append((state, action, reward, next_state, done))
+        if self.epsilon > self.min_epsilon:
+            self.epsilon *= self.epsilon_decay  # Applies the epsilon decay such that the chance of random action decreases
+
+    # random sampling from memory. Uses the sample to fit the model with new weights.
+    def train_experience_replay(self):
+        if len(self.memory) < self.train_start:
+            return
+        batch_size = min(self.batch_size, len(self.memory))
+
+        random_batch_sample = random.sample(self.memory,
+                                            batch_size)  # takes a random sample from memory of the size batch_size
+
+        input_batch_state = np.zeros((batch_size, self.state_size))  # initialises the batch
+        input_batch_targetState = np.zeros((batch_size, self.state_size))  # initialises target batch
+        action, reward, done = [], [], []  # initialises action reward and done boolean
+
+        for i in range(self.batch_size):
+            input_batch_state[i] = random_batch_sample[i][0]  # inserts states of the random sample batch
+            action.append(random_batch_sample[i][1])  # appends actions of the random sample batch to action
+            reward.append(random_batch_sample[i][2])  # appends rewards of the random sample batch to reward
+            input_batch_targetState[i] = random_batch_sample[i][3]  # insterts next states of the random sample batch
+            done.append(random_batch_sample[i][4])  # appends the done status of the random sample batch
+
+        qVal = self.model.predict(input_batch_state)  # predicts the q-values of current state
+        target_qVal = self.targetState_model.predict(input_batch_targetState)  # predicts the q-values of next state
+
+        for i in range(self.batch_size):
+            # Provide rewards for each q-value
+            if done[i]:
+                qVal[i][action[i]] = reward[i]
+            else:
+                # Value function - if the episode is not done, future rewards are calculated with the discount factor
+                qVal[i][action[i]] = reward[i] + self.gamma * np.amax(target_qVal[i])
+
+                # Fits the model with current states and the corresponding q-values from the batch.
+        self.model.fit(input_batch_state, qVal, batch_size=self.batch_size, epochs=1, verbose=0)
+
+    # Create the gym environment MountainCar-v0.
+
+
+# env = gym.make('CartPole-v1') # Enable this if you want to change to Cart Pole environment.
+# Also change the below success number.
+
+env = gym.make('MountainCar-v0')
+env_name = "MountainCar"
+
+# env_name = "CartPole"
+# success_num = 475
+success_num = -110
+
+# Getting the sizes of the observations and actions.
+state_size = env.observation_space.shape[0]
+action_size = env.action_space.n
+# In MountainCar-v0, a state contains the x-position and the velocity of the car.
+
+# Creating the Deep Q-network Agent from the Agent class
+agent = Agent(state_size, action_size)
+
+# initializes the scores and episodes arrays (counting scores for each episode) and sets them to nothing.
+scores, episodes = [], []
+
+# The max amount of episodes to run, if the mountain car environment is not solved in this amount of episodes
+max_episodes = 3000
+
+# Run through each episode, resetting the environment (grabbing initial state) and runnning each step of the environment
+# until done is true, then starting a new episode.
+for i in range(max_episodes):
+    # Reset done boolean to start while loop again
+    done = False
+    # Set score to 0, resetting the score for the episode
+    score = 0
+    # Reset the environment and get the first state (observation)
+    state = env.reset()
+    # Reshape the state from a box() to a one-dimensional array.
+    state = np.reshape(state, [1, state_size])
+
+    while not done:
+        if agent.rendering and i > 300:  # set rendering boolean to true to render environment after 300 episodes
+            env.render()
+
+            # grab action from the environment in the current state
+        action = agent.get_action(state)
+        target_state, reward, done, info = env.step(action)  # take a step in the environment with the chosen action
+        target_state = np.reshape(target_state, [1, state_size])  # reshapes the state to a one-dimensional array
+
+        agent.experience_replay(state, action, reward, target_state, done)  # Run experience replay class function,
+        # appending the state, action, reward, target state and done boolean to the memory
+
+        agent.train_experience_replay()  # runs function to random sample from memory to use for model fitting
+        score += reward  # summarizes reward
+        state = target_state  # sets new current state
+
+        if done:
+            # At the end of every episode update the target model, to the current model.
+            agent.update_targetState_model()
+            scores.append(score)  # Append scores and episodes, for later visualization and system termination
+            episodes.append(i)
+            print("Episode:", i, "  Score:", score, "  epsilon:", round(agent.epsilon, 1))  # Print Agent progress
+
+            # The MountainCar-v0 problem i considered solved when the agent ends 100 consecutive episodes with a mean
+            # score of -110 or above
+            # Change the below number (-110) to 475, if you want to change to the Cart Pole Environment.
+            # Create a matplot and label axis etc.
+            # Finally terminate the system, since the task has been solved
+            if np.mean(scores[-min(100, len(scores)):]) >= success_num:
+                finish_time = (time.time() - start_time)
+                plt.plot(episodes, scores)
+                plt.xlabel("Episodes")
+                plt.ylabel("Score achieved in episode")
+                plt.title(env_name + " \n Deep Q Network Agent \n Finished after %s seconds" % round(finish_time, 4))
+                plt.show()
+                sys.exit()
+
