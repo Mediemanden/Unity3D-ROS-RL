@@ -60,9 +60,13 @@ To load and save models (this is needed for the RL algorithm), install h5py:
 ```
 sudo pip install h5py
 ```
+## Install Unity on Ubuntu machine
+A Unity3D installation for Linux can be found [here](https://forum.unity.com/threads/unity-on-linux-release-notes-and-known-issues.350256/).
+
+Optionally, Unity3D can be run on a seperate windows computer with network connection to the Ubuntu machine.
 
 ## Download Unity Project
-Download the ROSUnityProject to your computer. 
+Download the ROSUnityProject to the computer with Unity3D installed.
 
 # Getting Started
 
@@ -91,3 +95,12 @@ With the RL algorithm running in the terminal, the Unity project can be run by p
 
 The robot is then controlled by the RL package, and moves around according to the action sent to it. 
 The terminal should react to the Unity project starting and print information about the reinforcement learning. 
+
+# Using ROS# for other Unity projects
+
+ROS# is the Unity package used to create a communication with ROS. 
+
+The package is imported in the Unity project of this repository, therefore it works right out of the box. 
+
+To use this package in other Unity projects, use the assets store in Unity to download and import the package called  [**ROS# - ROS-Unity Communication Package**](https://assetstore.unity.com/packages/tools/physics/ros-ros-unity-communication-package-107085)
+
