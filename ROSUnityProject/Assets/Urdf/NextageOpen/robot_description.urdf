@@ -1,0 +1,506 @@
+<?xml version="1.0"?>
+<robot name="NextageOpen"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:rendering="http://playerstage.sourceforge.net/gazebo/xmlschema/#rendering"
+       xmlns:renderable="http://playerstage.sourceforge.net/gazebo/xmlschema/#renderable"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:physics="http://playerstage.sourceforge.net/gazebo/xmlschema/#physics"
+       xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:include filename="$(find nextage_description)/urdf/materials.urdf.xacro" />
+
+  <xacro:macro name="gazebo_nx_link" params="name color">
+    <gazebo reference="gazebo_${name}">
+      <material>Gazebo/${color}</material>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="transmission_nx_joint" params="name">
+    <transmission name="${name}_Trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${name}_Motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:gazebo_nx_link name="WAIST" color="Black" />
+  <link name="WAIST">
+    <visual>
+      <origin xyz="0 0 0.97" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/WAIST_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.97" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/WAIST_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1000" />
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <inertia ixx="20" ixy="0" ixz="0" iyy="20" iyz="0" izz="20"/>
+    </inertial>
+  </link>
+
+  <xacro:gazebo_nx_link name="CHEST_JOINT0_Link" color="Black" />
+  <link name="CHEST_JOINT0_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/CHEST_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/CHEST_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="3.0" />
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <inertia ixx="0.0639575" ixy="-0.00022833" ixz="0.00011172" iyy="0.0310845" iyz="6.48e-05" izz="0.0501107"/>
+    </inertial>
+  </link>
+
+  <xacro:gazebo_nx_link name="HEAD_JOINT0_Link" color="Black" />
+  <link name="HEAD_JOINT0_Link">
+    <visual>
+      <origin xyz="0 0 0.5695" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/HEAD_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.5695" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/HEAD_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.317929" />
+      <origin xyz="-2.292e-05 0.00547848 -0.00784016" rpy="0 -0 0"/>
+      <inertia ixx="0.00027682" ixy="3e-08" ixz="-3.3e-07" iyy="0.00013009" iyz="-1.092e-05" izz="0.00020954"/>
+    </inertial>
+  </link>
+
+  <xacro:gazebo_nx_link name="HEAD_JOINT1_Link" color="Black" />
+  <link name="HEAD_JOINT1_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/HEAD_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/HEAD_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.0808593" />
+      <!-- <origin xyz="5.02e-06 -0.0166777 0.0163153" rpy="0 -0 0"/> -->
+      <!-- <inertia ixx="8.07e-05" ixy="-3e-08" ixz="-4.30134e-22" iyy="3.025e-05" iyz="-1.277e-05" izz="6.637e-05"/> -->
+      <inertia ixx="1e-3" ixy="0" ixz="0" iyy="1e-3" iyz="0" izz="1e-3"/>
+    </inertial>
+  </link>
+
+  <xacro:gazebo_nx_link name="LARM_JOINT0_Link" color="Black" />
+  <link name="LARM_JOINT0_Link">
+    <visual>
+      <origin xyz="0 0.145 0.370296" rpy="-0.261799 0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.145 0.370296" rpy="-0.261799 0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.32626" />
+      <origin xyz="-0.00226388 -0.00521383 0.0156081" rpy="0 -0 0"/>
+      <inertia ixx="0.00207537" ixy="0.00011276" ixz="8.927e-05" iyy="0.00240295" iyz="-4.57e-05" izz="0.00141912"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="LARM_JOINT1_Link" color="Black" />
+  <link name="LARM_JOINT1_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.14898" />
+      <origin xyz="-5.236e-05 0.0583134 -0.107061" rpy="0 -0 0"/>
+      <inertia ixx="0.0154168" ixy="9.95417e-07" ixz="3.38147e-06" iyy="0.0147117" iyz="0.00213719" izz="0.0012658"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="LARM_JOINT2_Link" color="Black" />
+  <link name="LARM_JOINT2_Link">
+    <visual>
+      <origin xyz="0 0.095 -0.25" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT2_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.095 -0.25" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT2_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.577518" />
+      <origin xyz="-2.254e-05 0.00167107 -0.0715116" rpy="0 -0 0"/>
+      <inertia ixx="0.00143966" ixy="-3e-07" ixz="1.2e-06" iyy="0.00141763" iyz="-7.596e-05" izz="0.0001972"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="LARM_JOINT3_Link" color="Black" />
+  <link name="LARM_JOINT3_Link">
+    <visual>
+      <origin xyz="-0.03 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT3_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT3_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.457418" />
+      <origin xyz="-1.788e-05 -0.00395812 -0.20273" rpy="0 -0 0"/>
+      <inertia ixx="0.00069205" ixy="3e-08" ixz="5.2e-07" iyy="0.00068903" iyz="-1.915e-05" izz="0.00013509"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="LARM_JOINT4_Link" color="Black" />
+  <link name="LARM_JOINT4_Link">
+    <visual>
+      <origin xyz="0 0 -0.235" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT4_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.235" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT4_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.418434" />
+      <origin xyz="0.00243131 0.00379733 -0.0577036" rpy="0 -0 0"/>
+      <inertia ixx="0.00052016" ixy="1.69e-06" ixz="7.9e-06" iyy="0.00050569" iyz="-5.377e-05" izz="0.00014004"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="LARM_JOINT5_Link" color="Black" />
+  <link name="LARM_JOINT5_Link">
+    <visual>
+      <origin xyz="-0.047 0 -0.09" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT5_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.047 0 -0.09" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/LARM_JOINT5_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.05156" />
+      <origin xyz="-0.048476 -3.2e-06 -0.0388988" rpy="0 -0 0"/>
+      <inertia ixx="0.00194072" ixy="1.1e-07" ixz="-0.00042482" iyy="0.00209392" iyz="1.2e-07" izz="0.00035788"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT0_Link" color="Black" />
+  <link name="RARM_JOINT0_Link">
+    <visual>
+      <origin xyz="0 -0.145 0.370296" rpy="0.261799 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.145 0.370296" rpy="0.261799 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT0_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.32626" />
+      <origin xyz="-0.00226388 0.00521383 0.0156081" rpy="0 -0 0"/>
+      <inertia ixx="0.00207537" ixy="-0.00011276" ixz="8.927e-05" iyy="0.00240295" iyz="4.57e-05" izz="0.00141912"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT1_Link" color="Black" />
+  <link name="RARM_JOINT1_Link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT1_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.14898" />
+      <origin xyz="-5.236e-05 -0.0583134 -0.107061" rpy="0 -0 0"/>
+      <inertia ixx="0.0154168" ixy="-9.95417e-07" ixz="3.38147e-06" iyy="0.0147117" iyz="-0.00213719" izz="0.0012658"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT2_Link" color="Black" />
+  <link name="RARM_JOINT2_Link">
+    <visual>
+      <origin xyz="0 -0.095 -0.25" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT2_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.095 -0.25" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT2_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.577518" />
+      <origin xyz="-2.254e-05 -0.00167107 -0.0715116" rpy="0 -0 0"/>
+      <inertia ixx="0.00143966" ixy="3e-07" ixz="1.2e-06" iyy="0.00141763" iyz="7.596e-05" izz="0.0001972"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT4_Link" color="Black" />
+  <link name="RARM_JOINT3_Link">
+    <visual>
+      <origin xyz="-0.03 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT3_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.03 0 0" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT3_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.457418" />
+      <origin xyz="-1.788e-05 0.00395812 -0.20273" rpy="0 -0 0"/>
+      <inertia ixx="0.00069205" ixy="-3e-08" ixz="5.2e-07" iyy="0.00068903" iyz="1.915e-05" izz="0.00013509"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT4_Link" color="Black" />
+  <link name="RARM_JOINT4_Link">
+    <visual>
+      <origin xyz="0 0 -0.235" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT4_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.235" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT4_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.418434" />
+      <origin xyz="0.00243131 -0.00379733 -0.0577036" rpy="0 -0 0"/>
+      <inertia ixx="0.00052016" ixy="-1.69e-06" ixz="7.9e-06" iyy="0.00050569" iyz="5.377e-05" izz="0.00014004"/>
+    </inertial>
+  </link>
+  <xacro:gazebo_nx_link name="RARM_JOINT5_Link" color="Black" />
+  <link name="RARM_JOINT5_Link">
+    <visual>
+      <origin xyz="-0.047 0 -0.09" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT5_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="-0.047 0 -0.09" rpy="0 -0 0"/>
+      <geometry>
+        <mesh filename="package://nextage_description/urdf/meshes/RARM_JOINT5_Link_mesh.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.05156" />
+      <origin xyz="-0.048476 3.2e-06 -0.0388988" rpy="0 -0 0"/>
+      <inertia ixx="0.00194072" ixy="-1.1e-07" ixz="-0.00042482" iyy="0.00209392" iyz="-1.2e-07" izz="0.00035788"/>
+    </inertial>
+  </link>
+  <xacro:transmission_nx_joint name="CHEST_JOINT0" />
+  <joint name="CHEST_JOINT0" type="revolute">
+    <parent link="WAIST"/>
+    <child  link="CHEST_JOINT0_Link"/>
+    <origin xyz="0 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-2.84489" upper="2.84489" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="HEAD_JOINT0" />
+  <joint name="HEAD_JOINT0" type="revolute">
+    <parent link="CHEST_JOINT0_Link"/>
+    <child  link="HEAD_JOINT0_Link"/>
+    <origin xyz="0 0 0.5695" rpy="0 -0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-1.22173" upper="1.22173" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="HEAD_JOINT1" />
+  <joint name="HEAD_JOINT1" type="revolute">
+    <parent link="HEAD_JOINT0_Link"/>
+    <child  link="HEAD_JOINT1_Link"/>
+    <origin xyz="0 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-0.349066" upper="1.22173" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT0" />
+  <joint name="LARM_JOINT0" type="revolute">
+    <parent link="CHEST_JOINT0_Link"/>
+    <child  link="LARM_JOINT0_Link"/>
+    <origin xyz="0 0.145 0.370296" rpy="-0.261799 0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-1.53589" upper="1.53589" effort="150" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT1" />
+  <joint name="LARM_JOINT1" type="revolute">
+    <parent link="LARM_JOINT0_Link"/>
+    <child  link="LARM_JOINT1_Link"/>
+    <origin xyz="0 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-2.44346" upper="1.0472" effort="200" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT2" />
+  <joint name="LARM_JOINT2" type="revolute">
+    <parent link="LARM_JOINT1_Link"/>
+    <child  link="LARM_JOINT2_Link"/>
+    <origin xyz="0 0.095 -0.25" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-2.75762" upper="0" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT3" />
+  <joint name="LARM_JOINT3" type="revolute">
+    <parent link="LARM_JOINT2_Link"/>
+    <child  link="LARM_JOINT3_Link"/>
+    <origin xyz="-0.03 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-1.8326" upper="2.87979" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT4" />
+  <joint name="LARM_JOINT4" type="revolute">
+    <parent link="LARM_JOINT3_Link"/>
+    <child  link="LARM_JOINT4_Link"/>
+    <origin xyz="0 0 -0.235" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-1.74533" upper="1.74533" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="LARM_JOINT5" />
+  <joint name="LARM_JOINT5" type="revolute">
+    <parent link="LARM_JOINT4_Link"/>
+    <child  link="LARM_JOINT5_Link"/>
+    <origin xyz="-0.047 0 -0.09" rpy="0 -0 0 "/>
+    <axis   xyz="1 0 0"/>
+    <limit lower="-2.84489" upper="2.84489" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT0" />
+  <joint name="RARM_JOINT0" type="revolute">
+    <parent link="CHEST_JOINT0_Link"/>
+    <child  link="RARM_JOINT0_Link"/>
+    <origin xyz="0 -0.145 0.370296" rpy="0.261799 -0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-1.53589" upper="1.53589" effort="150" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT1" />
+  <joint name="RARM_JOINT1" type="revolute">
+    <parent link="RARM_JOINT0_Link"/>
+    <child  link="RARM_JOINT1_Link"/>
+    <origin xyz="0 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-2.44346" upper="1.0472" effort="200" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT2" />
+  <joint name="RARM_JOINT2" type="revolute">
+    <parent link="RARM_JOINT1_Link"/>
+    <child  link="RARM_JOINT2_Link"/>
+    <origin xyz="0 -0.095 -0.25" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-2.75762" upper="0" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT3" />
+  <joint name="RARM_JOINT3" type="revolute">
+    <parent link="RARM_JOINT2_Link"/>
+    <child  link="RARM_JOINT3_Link"/>
+    <origin xyz="-0.03 0 0" rpy="0 -0 0 "/>
+    <axis   xyz="0 0 1"/>
+    <limit lower="-2.87979" upper="1.8326" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT4" />
+  <joint name="RARM_JOINT4" type="revolute">
+    <parent link="RARM_JOINT3_Link"/>
+    <child  link="RARM_JOINT4_Link"/>
+    <origin xyz="0 0 -0.235" rpy="0 -0 0 "/>
+    <axis   xyz="0 1 0"/>
+    <limit lower="-1.74533" upper="1.74533" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+  <xacro:transmission_nx_joint name="RARM_JOINT5" />
+  <joint name="RARM_JOINT5" type="revolute">
+    <parent link="RARM_JOINT4_Link"/>
+    <child  link="RARM_JOINT5_Link"/>
+    <origin xyz="-0.047 0 -0.09" rpy="0 -0 0 "/>
+    <axis   xyz="1 0 0"/>
+    <limit lower="-2.84489" upper="2.84489" effort="100" velocity="0.5" />
+    <dynamics damping="0.2" friction="0" />
+  </joint>
+
+  <!-- Gazebo plugin for ROS Control -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+  </gazebo>
+
+</robot>
