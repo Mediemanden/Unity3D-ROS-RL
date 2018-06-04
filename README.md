@@ -79,6 +79,7 @@ With all prerequisites done, the Unity project and ROS package are easy to use.
     * Example: ws://169.254.92.54:9090 
 
 ## Run reinforcement learning script
+Reinforcement learning is done by the Reinforcement_Learning_Algorithm.py script. This script initializes the RL model and handles incoming states, rewards, and outgoing actions.
 
 To run the reinforcement learning script, use roslaunch: 
 ```
@@ -90,8 +91,21 @@ The RL algorithm is initialised and ready when the output reads
 --Ready To Run Unity Program--
 ```
 
+## Run model prediction script
+To test a model trained by reinforement learning, a Model Prediction script has been made. This model does not learn from its experiences, but only handles input and provides an outgoing action. 
+
+To run the model prediction script, use roslaunch: 
+```
+roslaunch file_server model_prediction.py
+```
+
+The prediction algorithm is initialised and ready when the output reads
+```
+--Ready To Run Unity Program--
+```
+
 ## Run Unity Project
-With the RL algorithm running in the terminal, the Unity project can be run by pressing the play button.
+With a RL algorithm running in the terminal, the Unity project can be run by pressing the play button.
 
 The robot is then controlled by the RL package, and moves around according to the action sent to it. 
 The terminal should react to the Unity project starting and print information about the reinforcement learning. 
