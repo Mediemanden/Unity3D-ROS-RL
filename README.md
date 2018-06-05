@@ -2,7 +2,7 @@
 Using a Unity3D package to connect to ROS topics, robots can be simulated in the game-engine with communication to a Reinforcement Learning Algorithm.
 
 # Prerequisites 
-To use the ROS package with Reinforcement Learning, some software is needed to be installed. An Nvidia-graphics card with CUDA compatibility is also needed. 
+To use the ROS package with Reinforcement Learning, some software is needed to be installed. An Nvidia graphics card with CUDA compatibility is recommended, but not needed. If such graphics card is not available, tensorflow CPU can be used.
 
 ## Install ROS Kinetic on Ubuntu machine:
 Follow instructions: http://wiki.ros.org/kinetic/Installation/Ubuntu 
@@ -21,16 +21,6 @@ echo $ROS_PACKAGE_PATH
 You should now see something like:
 ```
 	/home/username/catkin_ws/src:/opt/ros/kinetic/share
-```
-
-## Put file_server package into your catkin workspace
-
-* copy the package into the ~/catkin_ws/src/ folder
-* Run catkin_make:
-```
-roscd
-cd .. 
-catkin_make
 ```
 
 ## Install dependent packages
@@ -65,12 +55,29 @@ A Unity3D installation for Linux can be found [here](https://forum.unity.com/thr
 
 Optionally, Unity3D can be run on a seperate windows computer with network connection to the Ubuntu machine.
 
-## Download Unity Project
-Download the ROSUnityProject to the computer with Unity3D installed.
 
 # Getting Started
 
 With all prerequisites done, the Unity project and ROS package are easy to use.
+
+## Put file_server package into your catkin workspace
+
+* Copy the package into the ~/catkin_ws/src/ folder
+* Run catkin_make:
+```
+roscd
+cd .. 
+catkin_make
+```
+* Make the python scripts in file_server/scripts/ excecutable:
+```
+cd ~/catkin_ws/src/file_server/scripts
+chmod +x Reinforcement_Learning_Algorithm.py
+chmod +x Model_Predict.py
+```
+
+## Download Unity Project
+Download the ROSUnityProject to the computer with Unity3D installed.
 
 ## Set the connection parameters
 * Open Unity project.
@@ -83,7 +90,7 @@ Reinforcement learning is done by the Reinforcement_Learning_Algorithm.py script
 
 To run the reinforcement learning script, use roslaunch: 
 ```
-roslaunch file_server reinforcement_learning.py
+roslaunch file_server reinforcement_learning.launch
 ```
 
 The RL algorithm is initialised and ready when the output reads
@@ -96,7 +103,7 @@ To test a model trained by reinforement learning, a Model Prediction script has 
 
 To run the model prediction script, use roslaunch: 
 ```
-roslaunch file_server model_prediction.py
+roslaunch file_server model_prediction.launch
 ```
 
 The prediction algorithm is initialised and ready when the output reads
