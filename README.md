@@ -1,5 +1,5 @@
 # Unity3D-ROS-RL
-Using a Unity3D package to connect to ROS topics, robots can be simulated in the game-engine with communication to a Reinforcement Learning Algorithm.
+THis github is a collection of the code and Unity project used for my Master Thesis. It uses a Unity3D package to connect to ROS topics, which enables robots to be simulated in the game-engine with communication to a Reinforcement Learning Algorithm. Through this reinforcement learning algorithm, a Turtlebot2 is trained to find and drive into a blue ball using only images from a mounted camera. The resulting reinforcement learning algorithm is saved. The model can then be used to control a real robot. The reinforcement learning is therefore trained in a simulation and used in the real world. 
 
 # Prerequisites 
 To use the ROS package with Reinforcement Learning, some software is needed to be installed. An Nvidia graphics card with CUDA compatibility is recommended, but not needed. If such graphics card is not available, tensorflow CPU can be used.
@@ -86,7 +86,7 @@ Download the ROSUnityProject to the computer with Unity3D installed.
     * Example: ws://169.254.92.54:9090 
 
 ## Run reinforcement learning script
-Reinforcement learning is done by the Reinforcement_Learning_Algorithm.py script. This script initializes the RL model and handles incoming states, rewards, and outgoing actions.
+Reinforcement learning is done by the Reinforcement_Learning_Algorithm.py script. This script initializes the RL model and handles incoming states, rewards, and outgoing actions. The RL script contains a class called agent, which is used to set the hyperparameters of the RL model and build the model with the architecture provided in the build_model() class function. These hyperparameters and the architecture of the model is found as the first thing in the agent class. 
 
 To run the reinforcement learning script, use roslaunch: 
 ```
@@ -98,6 +98,10 @@ The RL algorithm is initialised and ready when the output reads
 --Ready To Run Unity Program--
 ```
 
+When an episode of RL has been done, the fitted RL model is saved in the ~/catkin_ws/src/file_server/scripts/Models folder as a h5 file. 
+
+Some stats about the RL is also saved and stored in a csv file in the ~/catkin_ws/src/file_server/scripts/TestStats folder.
+
 ## Run model prediction script
 To test a model trained by reinforement learning, a Model Prediction script has been made. This model does not learn from its experiences, but only handles input and provides an outgoing action. 
 
@@ -105,6 +109,8 @@ To run the model prediction script, use roslaunch:
 ```
 roslaunch file_server model_prediction.launch
 ```
+
+It will try to find a model called Prediction_Model.h5 in the ~/catkin_ws/src/file_server/scripts/Models folder and load it to the reinforcement learning algorithm. If no model is found, it will print "No Model to Load". The script will not work without a Prediction_Model. 
 
 The prediction algorithm is initialised and ready when the output reads
 ```
