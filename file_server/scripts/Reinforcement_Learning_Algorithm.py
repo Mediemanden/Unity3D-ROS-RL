@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-# Deep Q-Network reinforcement learning on gym AI MountainCar-v0
-# Lukas Rasmus Nielsen & Christoffer Bredo Lillelund
-# Multimedia Programming
+# Deep Q-Network reinforcement learning for Turltebot2 Robot with ROS connection
+# Christoffer Bredo Lillelund
+# Master Thesis in Medialogy, Aalborg University 2018
 
 # Imports:
 import sys
-# import gym
-# import pylab
 import os.path
 
 from time import sleep
